@@ -1,5 +1,5 @@
-# Advent of Code 2023
+# Advent of Code
 
-My attempt to solve the advent of code puzzles using F#
+My attempt to solve the Advent of Code puzzles
 
-https://adventofcode.com/2023
+https://adventofcode.com/
