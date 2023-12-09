@@ -40,8 +40,8 @@ let lcm a b =
 
 // Combination number n over k
 let comb n k =
-    let rec perfComb i agg =
-        if i > n - k then agg
-        else perfComb (i + 1) (agg * (bigint (n - i + 1)) / (bigint i))
+    let rec perfComb i agg1 agg2 =
+        if i > n - k then agg1 / agg2
+        else perfComb (i + 1) (agg1 * (bigint (n - i + 1))) (agg2 * (bigint i))
 
-    perfComb 1 (bigint 1) |> int64
+    perfComb 1 (bigint 1) (bigint 1) |> int64
