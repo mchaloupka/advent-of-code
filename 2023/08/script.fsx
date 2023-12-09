@@ -33,15 +33,6 @@ let getPathLengthFromTo startNode endNodes instructions graph =
     
     getPathLengthRec 0 instructions startNode
 
-// Function to calculate the Greatest Common Divisor
-let rec gcd a b =
-    if b = 0L then a
-    else gcd b (a % b)
-
-// Function to calculate the Least Common Multiple
-let lcm a b =
-    (a * b) / gcd a b
-
 let getPahtLengthPart2 instructions graph =
     let lastChar = fun x -> x |> Seq.rev |> Seq.head
     let nodesWithLastChar c = graph |> Map.keys |> Seq.filter (fun x -> x |> lastChar = c)
