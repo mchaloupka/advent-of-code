@@ -13,6 +13,11 @@ let extractFirstLine lines =
     if lines |> Seq.isEmpty then failwith "Empty sequence"
     else lines |> Seq.head, lines |> Seq.skip 1
 
+let parseIntoMatrix charParser lines =
+    lines
+    |> Seq.map (Seq.map charParser >> Seq.toArray)
+    |> Seq.toArray
+
 // Parsing operations
 let splitIntoTwo character (text: string) =
     let split = text.Split([|character|])
@@ -45,3 +50,31 @@ let comb n k =
         else perfComb (i + 1) (agg1 * (bigint (n - i + 1))) (agg2 * (bigint i))
 
     perfComb 1 (bigint 1) (bigint 1) |> int64
+
+// All pairs from list
+let allPairs input =
+    input
+    |> List.mapi (fun i x -> x, i)
+    |> List.collect (fun (x, i1) ->
+        input
+        |> List.mapi (fun i2 y ->
+            if (i2 > i1) then
+                (x, y) |> Some
+            else
+                None
+        )
+        |> List.choose id
+    )
+
+// Array function
+let allIndices<'T> (array2d: 'T array array) =
+    let rec iter ri ci = seq {
+        yield (ri, ci)
+        if ci + 1 = (array2d.[ri] |> Array.length) then
+            if ri + 1 < (array2d |> Array.length) then
+                yield! iter (ri + 1) 0
+        else
+            yield! iter ri (ci + 1)
+    }
+
+    iter 0 0
