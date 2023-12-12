@@ -9,6 +9,9 @@ let rec getCombinations resultCache curGroupSize remainingGroups input =
 
     let responseWithUpdatedCache (response: int64) cache =
         (cache |> Map.add cacheKey response), response
+
+    let recursiveResponseWithUpdatedCache (newCache, value) =
+        newCache |> responseWithUpdatedCache value
     
     match resultCache |> Map.tryFind (curGroupSize, remainingGroups, input) with
     | Some cached -> resultCache |> responseWithUpdatedCache cached
@@ -18,11 +21,17 @@ let rec getCombinations resultCache curGroupSize remainingGroups input =
             match remainingGroups with
             | f::_ when curGroupSize >= f -> resultCache |> responseWithUpdatedCache 0L
             | [] -> resultCache |> responseWithUpdatedCache 0L
-            | _ -> getCombinations resultCache (curGroupSize + 1) remainingGroups rest
+            | _ ->
+                getCombinations resultCache (curGroupSize + 1) remainingGroups rest
+                |> recursiveResponseWithUpdatedCache
         | '.'::rest ->
             match remainingGroups with
-            | _ when curGroupSize = 0 -> getCombinations resultCache 0 remainingGroups rest
-            | f::other when f = curGroupSize -> getCombinations resultCache 0 other rest
+            | _ when curGroupSize = 0 ->
+                getCombinations resultCache 0 remainingGroups rest
+                |> recursiveResponseWithUpdatedCache
+            | f::other when f = curGroupSize -> 
+                getCombinations resultCache 0 other rest
+                |> recursiveResponseWithUpdatedCache
             | _ -> resultCache |> responseWithUpdatedCache 0L
         | '?'::rest ->
             let (withSharpResultCache, withSharpValue) = getCombinations resultCache curGroupSize remainingGroups ('#'::rest)
@@ -31,6 +40,7 @@ let rec getCombinations resultCache curGroupSize remainingGroups input =
         | [] ->
             if curGroupSize > 0 then
                 getCombinations resultCache curGroupSize remainingGroups ['.']
+                |> recursiveResponseWithUpdatedCache
             elif remainingGroups |> List.isEmpty then
                 resultCache |> responseWithUpdatedCache 1L
             else
