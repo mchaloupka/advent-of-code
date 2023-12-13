@@ -13,6 +13,27 @@ let extractFirstLine lines =
     if lines |> Seq.isEmpty then failwith "Empty sequence"
     else lines |> Seq.head, lines |> Seq.skip 1
 
+let rec splitByNewLines lines = seq {
+    let rec gatherUntilNewLine agg groupLines = 
+        if groupLines |> Seq.isEmpty then
+            Seq.empty, agg |> List.rev
+        else
+            let firstLine = groupLines |> Seq.head
+            let remaining = groupLines |> Seq.tail
+
+            if (firstLine = "") then
+                remaining, agg |> List.rev
+            else
+                gatherUntilNewLine (firstLine::agg) remaining
+
+    if lines |> Seq.isEmpty |> not then
+        let (remainingLines, group) = gatherUntilNewLine [] lines
+        yield group
+        yield! splitByNewLines remainingLines
+    else
+        ()
+}
+
 let parseIntoMatrix charParser lines =
     lines
     |> Seq.map (Seq.map charParser >> Seq.toArray)
