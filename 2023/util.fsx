@@ -100,9 +100,9 @@ let allIndices<'T> (array2d: 'T array array) =
 
     iter 0 0
 
-let printMatrix<'T> (transform: 'T -> char) (array2d: 'T array array) =
+let printMatrix<'T> (transform: (int * int) -> char) (array2d: 'T array array) =
     let rec iter ri ci =
-        array2d.[ri].[ci] |> transform |> printf "%c"
+        (ri, ci) |> transform |> printf "%c"
         
         if ci + 1 = (array2d.[ri] |> Array.length) then
             printfn ""
