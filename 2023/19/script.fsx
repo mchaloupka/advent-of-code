@@ -136,7 +136,7 @@ type ItemRange = Map<ItemProperty, int * int>
 
 let isValid (itemRange: ItemRange) =
     itemRange
-    |> Map.forall (fun _ (rangeFrom, rangeTo) -> rangeFrom < rangeTo)
+    |> Map.forall (fun _ (rangeFrom, rangeTo) -> rangeFrom <= rangeTo)
 
 let rangeValue (itemRange: ItemRange) =
     itemRange
