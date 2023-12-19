@@ -11,7 +11,7 @@ let readLines (filePath:string) = seq {
 
 let extractFirstLine lines =
     if lines |> Seq.isEmpty then failwith "Empty sequence"
-    else lines |> Seq.head, lines |> Seq.skip 1
+    else lines |> Seq.head, lines |> Seq.tail
 
 let rec splitByNewLines lines = seq {
     let rec gatherUntilNewLine agg groupLines = 
@@ -49,7 +49,7 @@ let splitBy (character: char) (text: string) =
     split |> List.ofArray
 
 let splitByRegexGroups (regex: string) (text:string) =
-    let rx = Regex(regex, RegexOptions.None)
+    let rx: Regex = Regex(regex, RegexOptions.None)
     let m = rx.Match text
     
     if m.Success then m.Groups |> Seq.skip 1 |> Seq.map (fun x -> x.Value) |> Seq.toList
