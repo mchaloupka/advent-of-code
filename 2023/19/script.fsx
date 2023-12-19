@@ -194,4 +194,4 @@ machine
 |> getAcceptedRanges
 |> List.map rangeValue
 |> List.sum
-|> printfn "%A"
+|> printfn "Part 2: %A"
