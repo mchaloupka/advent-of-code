@@ -64,6 +64,9 @@ let rec gcd a b =
 let lcm a b =
     (a * b) / gcd a b
 
+// Numerical functions
+let euclideanMod a b = ((a % b) + b) % b
+
 // Combination number n over k
 let comb n k =
     let rec perfComb i agg1 agg2 =
