@@ -116,3 +116,16 @@ let printMatrix<'T> (transform: (int * int) -> char) (array2d: 'T array array) =
             iter ri (ci + 1)
 
     iter 0 0
+
+let cartesian xs ys = 
+    xs |> List.collect (fun x -> ys |> List.map (fun y -> x, y))
+
+let selfCartesian xs =
+    let withIndexes = xs |> List.mapi (fun i x -> i, x)
+    withIndexes
+    |> List.collect (fun (i, x) ->
+        withIndexes
+        |> List.filter (fun (ii, _) -> ii > i)
+        |> List.map (fun (_, y) -> x, y)
+    )
+    
