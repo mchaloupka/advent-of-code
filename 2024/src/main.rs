@@ -8,6 +8,7 @@ use std::io::{BufReader, Write};
 use std::time::Instant;
 
 mod day01;
+mod util;
 
 fn day_func(day: i32) -> fn(&str) {
     match day {
