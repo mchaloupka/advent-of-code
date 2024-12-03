@@ -27,8 +27,7 @@ pub fn run(input: &str) {
     let mut difference_b = 0;
     let mut right_pos = 0;
 
-    for i in 0..left_numbers.len() {
-        let left_number = left_numbers[i];
+    for left_number in left_numbers {
         let mut right_count = 0;
 
         while right_pos < right_numbers.len() && right_numbers[right_pos] < left_number {
