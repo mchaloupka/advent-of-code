@@ -12,6 +12,7 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod day06;
 mod util;
 
 fn day_func(day: i32) -> fn(&str) {
@@ -21,6 +22,7 @@ fn day_func(day: i32) -> fn(&str) {
         3 => day03::run,
         4 => day04::run,
         5 => day05::run,
+        6 => day06::run,
         _ => unreachable!(),
     }
 }
