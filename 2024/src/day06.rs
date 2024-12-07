@@ -85,8 +85,7 @@ fn next_pos(map: &Matrix, mut current_pos: Position) -> (bool, Position) {
     (is_next_out, current_pos)
 }
 
-fn part_1(input: &str) {
-    let (map, start) = parse_input(input);
+fn get_part_1_route(map: &Matrix, start: Position) -> HashSet<Coord> {
     let mut visited_points: HashSet<Coord> = HashSet::new();
 
     let mut current_pos = start;
@@ -94,13 +93,20 @@ fn part_1(input: &str) {
     loop {
         visited_points.insert(current_pos.0);
 
-        let (is_next_out, next_pos) = next_pos(&map, current_pos);
+        let (is_next_out, next_pos) = next_pos(map, current_pos);
         current_pos = next_pos;
 
         if is_next_out {
             break;
         }
     }
+
+    visited_points
+}
+
+fn part_1(input: &str) {
+    let (map, start) = parse_input(input);
+    let visited_points = get_part_1_route(&map, start);
 
     println!("Part 1: {}", visited_points.len());
 }
@@ -109,35 +115,33 @@ fn part_2(input: &str) {
     let (mut map, start) = parse_input(input);
     let mut variants = 0;
 
-    for r in 0..map.len() {
-        for c in 0..map[0].len() {
-            if map[r][c] {
-                continue;
-            }
-
-            map[r][c] = true;
-
-            let mut visited_positions: HashSet<Position> = HashSet::new();
-            let mut current_pos = start;
-
-            loop {
-                if visited_positions.contains(&current_pos) {
-                    variants += 1;
-                    break;
-                }
-
-                visited_positions.insert(current_pos);
-
-                let (is_next_out, next_pos) = next_pos(&map, current_pos);
-                current_pos = next_pos;
-
-                if is_next_out {
-                    break;
-                }
-            }
-
-            map[r][c] = false;
+    for (r, c) in get_part_1_route(&map, start) {
+        if map[r][c] {
+            continue;
         }
+
+        map[r][c] = true;
+
+        let mut visited_positions: HashSet<Position> = HashSet::new();
+        let mut current_pos = start;
+
+        loop {
+            if visited_positions.contains(&current_pos) {
+                variants += 1;
+                break;
+            }
+
+            visited_positions.insert(current_pos);
+
+            let (is_next_out, next_pos) = next_pos(&map, current_pos);
+            current_pos = next_pos;
+
+            if is_next_out {
+                break;
+            }
+        }
+
+        map[r][c] = false;
     }
 
     println!("Part 2: {variants}");
