@@ -1,5 +1,4 @@
 use regex::Regex;
-use std::{thread, time};
 
 #[derive(Debug, Clone, Copy)]
 struct Coord {
@@ -29,14 +28,14 @@ fn parse_input(input: &str) -> Vec<Robot> {
                 v: Coord {
                     x: capture["vx"].parse().unwrap(),
                     y: capture["vy"].parse().unwrap(),
-                }
+                },
             }
         })
         .collect()
 }
 
 fn simulate_robot(robot: &Robot, steps: i128, width: i128, height: i128) -> Robot {
-    Robot { 
+    Robot {
         p: Coord {
             x: (robot.p.x + robot.v.x * steps).rem_euclid(width),
             y: (robot.p.y + robot.v.y * steps).rem_euclid(height),
@@ -52,7 +51,7 @@ fn part_1(input: &str) {
 
     let after_simulation: Vec<_> = robots
         .into_iter()
-        .map(|r| { simulate_robot(&r, 100, width, height) })
+        .map(|r| simulate_robot(&r, 100, width, height))
         .collect();
 
     let mut quadrant_counts = vec![0, 0, 0, 0];
@@ -60,11 +59,11 @@ fn part_1(input: &str) {
     for r in after_simulation {
         if r.p.x < width / 2 && r.p.y < height / 2 {
             quadrant_counts[0] += 1;
-        } else if r.p.x >= width / 2 + 1 && r.p.y < height / 2 {
+        } else if r.p.x > width / 2 && r.p.y < height / 2 {
             quadrant_counts[1] += 1;
-        } else if r.p.x < width / 2 && r.p.y >= height / 2 + 1 {
+        } else if r.p.x < width / 2 && r.p.y > height / 2 {
             quadrant_counts[2] += 1;
-        } else if r.p.x >= width / 2 + 1 && r.p.y >= height / 2 + 1 {
+        } else if r.p.x > width / 2 && r.p.y > height / 2 {
             quadrant_counts[3] += 1;
         }
     }
@@ -79,8 +78,9 @@ fn part_1(input: &str) {
 }
 
 fn print_robots(robots: &Vec<Robot>, steps: i128, width: i128, height: i128) -> bool {
-    let mut map: Vec<Vec<bool>> = 
-        (0..height).map(|_| { (0..width).map(|_| { false }).collect() }).collect();
+    let mut map: Vec<Vec<bool>> = (0..height)
+        .map(|_| (0..width).map(|_| false).collect())
+        .collect();
 
     for robot in robots {
         map[robot.p.y as usize][robot.p.x as usize] = true;
@@ -94,32 +94,42 @@ fn print_robots(robots: &Vec<Robot>, steps: i128, width: i128, height: i128) -> 
 
             for dy in 0..5 {
                 for dx in 0..5 {
-                    if !map[y + dy][x + dx] { found_block = false; break; }
+                    if !map[y + dy][x + dx] {
+                        found_block = false;
+                        break;
+                    }
                 }
 
-                if !found_block { break; }
-            } 
+                if !found_block {
+                    break;
+                }
+            }
 
-            if found_block { can_be_tree = true; break; } 
+            if found_block {
+                can_be_tree = true;
+                break;
+            }
         }
 
-        if can_be_tree { break; }
+        if can_be_tree {
+            break;
+        }
     }
 
     if can_be_tree {
         for row in map {
             for c in row {
-                if c {    
+                if c {
                     print!("X");
                 } else {
                     print!(".");
                 }
             }
-    
-            println!("");
+
+            println!();
         }
 
-        println!("");
+        println!();
         println!("{steps}");
     }
 
@@ -135,7 +145,7 @@ fn part_2(input: &str) {
     loop {
         let after_simulation: Vec<_> = robots
             .iter()
-            .map(|r| { simulate_robot(&r, steps, width, height) })
+            .map(|r| simulate_robot(r, steps, width, height))
             .collect();
 
         let can_be_tree = print_robots(&after_simulation, steps, width, height);
@@ -143,7 +153,7 @@ fn part_2(input: &str) {
         if can_be_tree {
             break;
         }
-        
+
         steps += 1;
     }
 }
