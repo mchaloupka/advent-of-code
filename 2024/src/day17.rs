@@ -129,10 +129,20 @@ fn part_1(input: &str) {
 fn part_2(input: &str) {
     let machine = parse_input(input);
 
-    // Seems that the machine output is based on the individual bytes of
-    // the register A. So, we try to find the register A byte by byte. Seems
-    // like the first byte of the number results in last number of the output.
-    // And this way it iterates in loop.
+    // The input program can be rewritten as:
+    // 0: b = a & 0b111
+    // 2: b ^= 0b1
+    // 4: c = a >> b
+    // 6: b ^= 0b101
+    // 8: b ^= c
+    // 10: print b & 0b111
+    // 12: shift a to right by 3 bits
+    // 14: jmp 0 if a > 0
+    //
+    // Important observation is that the output is always processed by 3 bits and the only thing
+    // we do with A is to shift it by 3 bits to the right. So, output N is based on A shifted N*3 times
+    // to right. Therefore, for each output the A has 3 bits set to some value. And we can find
+    // them from highest 3-bits as the output ignores all lower bits.
 
     let mut oct_factors = vec![0; machine.instructions.len()];
 
@@ -157,7 +167,6 @@ fn part_2(input: &str) {
             break;
         }
 
-        // We go from last instructions to find the highest bytes first
         for i in (0..machine.instructions.len()).rev() {
             if output.len() < i {
                 oct_factors[i] += 1;
