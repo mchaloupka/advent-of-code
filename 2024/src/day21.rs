@@ -17,7 +17,11 @@ fn find_symbol(s: char, keyboard: &Keyboard) -> Coord {
     pos.unwrap()
 }
 
-fn find_all_shortest_paths_to_symbol(pos: Coord, target: Coord, keyboard: &Keyboard) -> Vec<String> {
+fn find_all_shortest_paths_to_symbol(
+    pos: Coord,
+    target: Coord,
+    keyboard: &Keyboard,
+) -> Vec<String> {
     if pos == target {
         vec![String::from("A")]
     } else {
@@ -25,16 +29,16 @@ fn find_all_shortest_paths_to_symbol(pos: Coord, target: Coord, keyboard: &Keybo
 
         if pos.1 < target.1 && keyboard[pos.0][pos.1 + 1] != '#' {
             nexts.push(((pos.0, pos.1 + 1), '>'));
-        } 
+        }
         if pos.0 < target.0 && keyboard[pos.0 + 1][pos.1] != '#' {
             nexts.push(((pos.0 + 1, pos.1), 'v'));
-        } 
+        }
         if pos.1 > target.1 && keyboard[pos.0][pos.1 - 1] != '#' {
             nexts.push(((pos.0, pos.1 - 1), '<'));
-        } 
+        }
         if pos.0 > target.0 && keyboard[pos.0 - 1][pos.1] != '#' {
             nexts.push(((pos.0 - 1, pos.1), '^'));
-        } 
+        }
         if nexts.is_empty() {
             panic!("Not found movement");
         }
@@ -51,9 +55,9 @@ fn find_all_shortest_paths_to_symbol(pos: Coord, target: Coord, keyboard: &Keybo
                 output.push(final_output);
             }
         }
-        
+
         output
-    } 
+    }
 }
 
 static NUMERIC_KEYBOARD: [[char; 3]; 4] = [
@@ -63,16 +67,13 @@ static NUMERIC_KEYBOARD: [[char; 3]; 4] = [
     ['#', '0', 'A'],
 ];
 
-static MOVEMENT_KEYBOARD: [[char; 3]; 2] = [
-    ['#', '^', 'A'],
-    ['<', 'v', '>'],
-];
+static MOVEMENT_KEYBOARD: [[char; 3]; 2] = [['#', '^', 'A'], ['<', 'v', '>']];
 
 fn get_shortest_sequence_length(input: String, is_numeric: bool, transforms: usize) -> usize {
     if transforms == 0 {
         return input.len();
     }
-    
+
     let mut last_c = 'A';
     let mut shortest_output_length = 0;
 
@@ -99,7 +100,7 @@ fn get_shortest_path_length(from: char, to: char, is_numeric: bool, transforms: 
     for variant in find_all_shortest_paths_to_symbol(from_pos, to_pos, keyboard) {
         let variant_shortest_length = get_shortest_sequence_length(variant, false, transforms - 1);
         match shortest_length {
-            Some(x) if x <= variant_shortest_length => { },
+            Some(x) if x <= variant_shortest_length => {}
             _ => {
                 shortest_length = Some(variant_shortest_length);
             }
