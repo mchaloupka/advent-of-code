@@ -1,5 +1,4 @@
 use cached::proc_macro::cached;
-use cached::SizedCache;
 
 type Coord = (usize, usize);
 type Keyboard = [[char; 3]];
@@ -69,36 +68,24 @@ static MOVEMENT_KEYBOARD: [[char; 3]; 2] = [
     ['<', 'v', '>'],
 ];
 
-fn get_shortest_sequence(input: String, is_numeric: bool, transforms: usize) -> Vec<String> {
+fn get_shortest_sequence_length(input: String, is_numeric: bool, transforms: usize) -> usize {
     if transforms == 0 {
-        return vec![input];
+        return input.len();
     }
     
     let mut last_c = 'A';
-    let mut outputs = vec![String::new()];
+    let mut shortest_output_length = 0;
 
     for input_c in input.chars() {
-        let mut new_outputs =  Vec::new();
-
-        let possible_paths = get_shortest_paths(last_c, input_c, is_numeric, transforms);
-
-        for possible_path in possible_paths {
-            for output in outputs.iter() {
-                let mut new_output = output.clone();
-                new_output += possible_path.as_str();
-                new_outputs.push(new_output);
-            }
-        }
-
-        outputs = new_outputs;
+        shortest_output_length += get_shortest_path_length(last_c, input_c, is_numeric, transforms);
         last_c = input_c;
     }
 
-    outputs
+    shortest_output_length
 }
 
 #[cached]
-fn get_shortest_paths(from: char, to: char, is_numeric: bool, transforms: usize) -> Vec<String> {
+fn get_shortest_path_length(from: char, to: char, is_numeric: bool, transforms: usize) -> usize {
     let keyboard: &[[char; 3]] = match is_numeric {
         true => &NUMERIC_KEYBOARD,
         false => &MOVEMENT_KEYBOARD,
@@ -107,28 +94,19 @@ fn get_shortest_paths(from: char, to: char, is_numeric: bool, transforms: usize)
     let from_pos = find_symbol(from, keyboard);
     let to_pos = find_symbol(to, keyboard);
 
-    let mut output = Vec::new();
     let mut shortest_length = None;
 
     for variant in find_all_shortest_paths_to_symbol(from_pos, to_pos, keyboard) {
-        for shortest_nested in get_shortest_sequence(variant, false, transforms - 1) {
-            let cur_length = shortest_nested.len();
-
-            match shortest_length {
-                // Ignore if the found is longer
-                Some(x) if x < cur_length => { },
-                // Add if the found is minimum length
-                Some(x) if x == cur_length => { output.push(shortest_nested); },
-                // Replace if the found is the shorter than any other found
-                _ => { 
-                    output = vec![shortest_nested];
-                    shortest_length = Some(cur_length);
-                }
-            };
+        let variant_shortest_length = get_shortest_sequence_length(variant, false, transforms - 1);
+        match shortest_length {
+            Some(x) if x <= variant_shortest_length => { },
+            _ => {
+                shortest_length = Some(variant_shortest_length);
+            }
         }
     }
 
-    output
+    shortest_length.unwrap()
 }
 
 fn calculate_part(input: &str, transforms: usize) -> usize {
@@ -136,8 +114,8 @@ fn calculate_part(input: &str, transforms: usize) -> usize {
 
     for line in input.lines() {
         let numerical: usize = line[0..line.len() - 1].parse().unwrap();
-        let shortest_sequences = get_shortest_sequence(String::from(line), true, transforms);
-        total += numerical * shortest_sequences[0].len();
+        let shortest_sequence = get_shortest_sequence_length(String::from(line), true, transforms);
+        total += numerical * shortest_sequence;
     }
 
     total
