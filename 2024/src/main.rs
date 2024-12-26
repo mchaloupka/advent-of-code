@@ -31,8 +31,7 @@ mod day21;
 mod day22;
 mod day23;
 mod day24;
-
-mod util;
+mod day25;
 
 fn day_func(day: i32) -> fn(&str) {
     match day {
@@ -60,6 +59,7 @@ fn day_func(day: i32) -> fn(&str) {
         22 => day22::run,
         23 => day23::run,
         24 => day24::run,
+        25 => day25::run,
         _ => unreachable!(),
     }
 }
@@ -127,7 +127,14 @@ fn main() {
 
     match args.len() {
         2 => {
-            run_day(args[1].parse().unwrap());
+            if args[1] == "all" {
+                for i in 1..26 {
+                    println!("Day {}:", i);
+                    run_day(i);
+                }
+            } else {
+                run_day(args[1].parse().unwrap());
+            }
         }
         3 => {
             if args[1] != "init" {
