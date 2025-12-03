@@ -9,11 +9,13 @@ use std::time::Instant;
 
 mod day01;
 mod day02;
+mod day03;
 
 fn day_func(day: i32) -> fn(&str) {
     match day {
         1 => day01::run,
         2 => day02::run,
+        3 => day03::run,
         _ => unreachable!(),
     }
 }

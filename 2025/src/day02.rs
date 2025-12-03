@@ -1,13 +1,11 @@
 pub fn run(input: &str) {
-    let ranges = input.trim()
-        .split(",")
-        .map(|range| {
-            let parts: Vec<&str> = range.split("-").collect();
-            (
-                parts[0].parse::<i64>().expect("Incorrect number"),
-                parts[1].parse::<i64>().expect("Incorrect number"),
-            )
-        });
+    let ranges = input.trim().split(",").map(|range| {
+        let parts: Vec<&str> = range.split("-").collect();
+        (
+            parts[0].parse::<i64>().expect("Incorrect number"),
+            parts[1].parse::<i64>().expect("Incorrect number"),
+        )
+    });
 
     let mut part_1 = 0;
     let mut part_2 = 0;
@@ -33,7 +31,7 @@ pub fn run(input: &str) {
                         break;
                     }
                 }
-                
+
                 if all_match {
                     part_2 += i;
                     break;
@@ -49,8 +47,6 @@ pub fn run(input: &str) {
                     part_1 += i;
                 }
             }
-
-            
         }
     }
 

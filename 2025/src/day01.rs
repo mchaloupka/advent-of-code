@@ -1,16 +1,15 @@
 pub fn run(input: &str) {
-    let numbers = input.lines()
-        .map(|line| {
-            let direction = line.chars().next().unwrap();
-            let number_str = &line[1..];
-            let num: i32 = number_str.parse().unwrap();
-            
-            match direction {
-                'L' => -num,
-                'R' => num,
-                _ => panic!("Invalid direction: {}", direction),
-            }
-        });
+    let numbers = input.lines().map(|line| {
+        let direction = line.chars().next().unwrap();
+        let number_str = &line[1..];
+        let num: i32 = number_str.parse().unwrap();
+
+        match direction {
+            'L' => -num,
+            'R' => num,
+            _ => panic!("Invalid direction: {}", direction),
+        }
+    });
 
     let mut dial = 50;
     let mut part_one = 0;
