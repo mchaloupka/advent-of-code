@@ -1,1 +1,1 @@
-pub fn run(input: &str) {}
+pub fn run(_input: &str) {}
